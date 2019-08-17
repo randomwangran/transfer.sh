@@ -13,7 +13,7 @@ So far we cannot address any issue related to the service at https://transfer.sh
 
 ### Upload:
 ```bash
-$ curl --upload-file ./hello.txt https://transfer.sh/hello.txt
+$ curl --upload-file ./hello.txt localhost:8080/hello.txt
 ```
 
 ### Encrypt & upload:
@@ -78,43 +78,6 @@ transfer() {
 }
 
 alias transfer=transfer
-```
-
-## Add alias for fish-shell
-
-### Using curl
-```fish
-function transfer --description 'Upload a file to transfer.sh'
-    if [ $argv[1] ]
-        # write to output to tmpfile because of progress bar
-        set -l tmpfile ( mktemp -t transferXXXXXX )
-        curl --progress-bar --upload-file "$argv[1]" https://transfer.sh/(basename $argv[1]) >> $tmpfile
-        cat $tmpfile
-        command rm -f $tmpfile
-    else
-        echo 'usage: transfer FILE_TO_TRANSFER'
-    end
-end
-
-funcsave transfer
-```
-
-### Using wget
-```fish
-function transfer --description 'Upload a file to transfer.sh'
-    if [ $argv[1] ]
-        wget -t 1 -qO - --method=PUT --body-file="$argv[1]" --header="Content-Type: (file -b --mime-type $argv[1])" https://transfer.sh/(basename $argv[1])
-    else
-        echo 'usage: transfer FILE_TO_TRANSFER'
-    end
-end
-
-funcsave transfer
-```
-
-Now run it like this:
-```bash
-$ transfer test.txt
 ```
 
 ## Add alias on Windows
